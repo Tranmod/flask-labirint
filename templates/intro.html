@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Игра лабиринт - Интро
+{% endblock %}
+{% block app_content %} 
+    <div class="form-block">
+        <div class="alert {{ game.alert[1] }}">
+            Вы проснулись в незнакомом месте после вчерашней вечеринки. Глоток свежего воздуха
+            Вам бы сейчас не повредил. Найдите путь на балкон
+        </div>
+        <div class="alert {{ game.alert[1] }}">
+            Но для начала, Вам бы не помешало вспомнить своё имя
+        </div>
+        {% set current = game.current_place|join('-') %}
+        <form action="{{ url_for('game', current=current) }}" method="post">
+            {{ form.csrf_token() }}
+            {% for field in form if field.name != 'csrf_token' %}
+                {% if field.name != 'submit' %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field }}
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="form-group">
+                {{ form.submit(class_="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}

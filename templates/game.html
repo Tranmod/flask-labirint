@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Игра лабиринт
+{% endblock %}
+{% block app_content %} 
+    <div class="btns-block">
+        <a class="btn btn-warning home" href="{{ url_for('index') }}">Главная</a>
+        <a class="btn btn-info refresh" href="{{ url_for('intro') }}">Начать сначала</a>
+    </div>
+    <div class="form-block">
+        <div class="alert {{ game.alert[1] }}">
+            {{ game.alert[0] }}
+        </div>
+        {% set current = game.current_place|join('-') %}
+        <form action="{{ url_for('game', current=current) }}" method="post">
+            {{ form.csrf_token() }}
+            {% for field in form if field.name != 'csrf_token' %}
+                {% if field.name != 'submit' and field.name != 'user_name' %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field }}
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="form-group">
+                {{ form.user_name(class_="hidden", value=game.user_name) }}
+                {{ form.submit(class_="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+
