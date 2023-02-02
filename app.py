@@ -1,29 +1,31 @@
 from flask import Flask, render_template, request
+
 import forms
+from config import Config
 from game import Game
 
-
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'asfdasdgasdgas56406asdg6w53gfasd'
+app.config.from_object(Config)
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/intro/')
 def intro():
-    form = forms.UserNameForm();
+    form = forms.UserNameForm()
     return render_template('intro.html', game=Game(), form=form)
 
 
 @app.route('/game/<current>', methods=['POST', 'GET'])
 def game(current):
-    form = forms.GameForm();
+    form = forms.GameForm()
 
     if request.method == "POST":
         current_position = [int(x) for x in current.split('-')]
-        
+
         if request.form.get('user_name'):
             user_name = request.form.get('user_name')
 
@@ -31,7 +33,7 @@ def game(current):
 
         if request.form.get('stages'):
             current_game.move(current_position, request.form.get('direction'),
-                          int(request.form.get('stages')))
+                              int(request.form.get('stages')))
         return render_template('game.html', form=form, game=current_game)
     else:
         return render_template('game.html', form=form, game=Game())
